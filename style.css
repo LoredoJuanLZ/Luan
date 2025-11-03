@@ -1,0 +1,771 @@
+/* --- Variables de Tema (Optimizado - Colores Sólidos por defecto) --- */
+:root {
+    /* El JS sobreescribirá esto basado en el tema */
+    --main-color: #00aaff; 
+    --sensitivity-multiplier: 0.5; 
+    
+    /* VARIABLES DE UI (Mate/Sólido) */
+    --body-bg: #121212;
+    --card-bg-color: #1e1e1e;
+    --border-color: #333333;
+    --card-text-color: #ffffff;
+    --card-text-secondary-color: #aaaaaa;
+
+    /* Variable para la fuente de la letra (Añadida) */
+    --lyrics-font-family: 'Roboto', sans-serif; 
+}
+
+/* --- 1. Estilos Base y Fondo --- */
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
+    /* Fuente base del UI */
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    overflow-x: hidden;
+    
+    background: var(--body-bg); 
+    transition: background 0.5s ease-in-out;
+    background-attachment: fixed;
+}
+
+/* --- Estilos para Header y Footer (Ya no son 'glass') --- */
+.header-footer-bar {
+    width: 100%;
+    height: 35px;
+    background: var(--card-bg-color);
+    border-bottom: 1px solid var(--border-color); 
+    
+    border-radius: 0 0 15px 15px;
+    z-index: 5;
+    flex-shrink: 0;
+    
+    display: flex;
+    align-items: center;
+    justify-content: center; 
+    padding: 0 20px;
+    box-sizing: border-box; 
+    
+    transition: background-color 0.5s ease-in-out, border-color 0.5s ease-in-out;
+}
+
+footer.header-footer-bar {
+    border-radius: 15px 15px 0 0;
+    border-bottom: none;
+    border-top: 1px solid var(--border-color);
+}
+
+/* --- Estilos del Header (Sin cambios en layout) --- */
+.header-content {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    width: 100%;
+    max-width: 1000px; 
+    color: var(--card-text-color);
+    font-size: 0.9em;
+    transition: color 0.5s ease-in-out;
+}
+
+.header-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: var(--card-text-color); /* Color primario (blanco/negro) */
+    transition: color 0.5s ease-in-out;
+}
+
+#header-song-title {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-weight: 500;
+    justify-self: start;
+    color: var(--card-text-color); 
+}
+
+#header-battery { justify-self: center; }
+#header-time { justify-self: end; }
+#battery-icon { font-size: 1.1em; }
+
+/* CONTENEDOR PRINCIPAL */
+.main-container { 
+    flex-grow: 1; 
+    display: flex;
+    flex-wrap: wrap; 
+    gap: 20px; 
+    z-index: 1; 
+    align-items: center; 
+    justify-content: center; 
+    width: 100%; 
+    padding: 20px 0; 
+}
+
+/* --- Estilos de Drag and Drop (Optimizados) --- */
+.player-card, 
+.playlist-panel, 
+.color-selector,
+.lyrics-panel {
+    cursor: grab; 
+    transition: transform 0.2s, opacity 0.2s, background-color 0.5s, border-color 0.5s, color 0.5s;
+}
+.dragging {
+    opacity: 0.5; 
+}
+
+
+/* --- 2. Estilos del Reproductor (Optimizados) --- */
+.player-card {
+    display: flex; flex-direction: column; 
+    background: var(--card-bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    color: var(--card-text-color); 
+    width: 450px; 
+    min-width: 450px; 
+    padding: 30px;
+}
+
+.controls-panel { display: flex; flex-direction: column; gap: 20px; }
+#audio-player { display: none; }
+
+/* 3. Estilos de Información y Portada */
+.song-info { display: flex; align-items: flex-start; gap: 20px; width: 100%; flex-wrap: nowrap;}
+.album-art { 
+    width: 120px; height: 120px; 
+    background-color: #000;
+    border-radius: 15px; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    background-size: cover; 
+    background-position: center; 
+    flex-shrink: 0; 
+    position: relative; 
+}
+
+#album-icon { 
+    position: relative; 
+    font-size: 80px; 
+    color: var(--card-text-secondary-color); 
+    opacity: 0.8; 
+} 
+
+.text-details { flex-grow: 1; width: calc(100% - 140px); overflow: hidden; }
+.song-title { margin: 0 0 5px 0; font-size: 1.8em; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.artist-name { 
+    margin: 0; 
+    font-size: 1em; 
+    color: var(--card-text-secondary-color); 
+    white-space: nowrap; 
+    overflow: hidden; 
+    text-overflow: ellipsis; 
+}
+
+/* 4. Estilos de Controles (Optimizados) */
+.player-controls, .secondary-controls { display: flex; justify-content: center; gap: 30px; align-items: center; }
+
+.control-btn, .play-btn { 
+    border: none; 
+    border-radius: 50%; 
+    color: var(--card-text-color); 
+    cursor: pointer; 
+    transition: background-color 0.3s, transform 0.1s; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+}
+.control-btn { 
+    width: 45px; height: 45px; font-size: 24px; 
+    background: transparent;
+    border: 1px solid var(--border-color);
+    opacity: 0.8; 
+}
+.control-btn:hover {
+    background-color: var(--border-color);
+}
+
+.play-btn { 
+    width: 70px; height: 70px; 
+    background: var(--main-color);
+    font-size: 36px; 
+    transition: background-color 0.5s ease-in-out, transform 0.1s; 
+}
+.play-btn:hover {
+    filter: brightness(1.2);
+}
+
+/* 5. Estilos de la Barra de Progreso (Optimizados) */
+.progress-bar-container { display: flex; align-items: center; gap: 10px; }
+.progress-bar { 
+    flex-grow: 1; 
+    height: 8px;
+    background: #000;
+    border-radius: 4px;
+    cursor: pointer; 
+    position: relative; 
+    overflow: visible; 
+}
+.progress-line { 
+    width: 0%; 
+    height: 100%;
+    background: var(--main-color); 
+    border-radius: 3px; 
+    transform-origin: bottom; 
+    
+   transition: width 0.1s linear, background-color 0.5s ease-in-out, transform 0.1s ease-out, opacity 0.3s ease-in-out;
+    
+    position: relative; 
+    overflow: visible; 
+    display: flex; 
+    justify-content: flex-start;
+    align-items: flex-end;
+    gap: 2px;
+    padding: 0 2px;
+    opacity: 1; 
+}
+
+/* Estilos dinámicos (sin sombras) */
+.progress-line[data-style="line"] {
+    transform-origin: center; 
+    opacity: 1;
+    background: var(--main-color);
+}
+.progress-line[data-style="spark"] {
+    transition: width 0.1s linear, transform 0.05s ease-out; 
+    transform-origin: center; 
+    opacity: 1;
+    background: var(--main-color);
+}
+.progress-line[data-style="bars"] {
+    background: transparent !important; 
+    opacity: 1; 
+    transform: none !important; 
+    transition: width 0.1s linear, opacity 0.3s;
+}
+
+/* Estilos para las Barras Dinámicas (Optimizadas) */
+.dyn-bar {
+    width: 3px;
+    min-width: 3px;
+    max-width: 3px;
+    height: 100%;
+    background: var(--main-color);
+    border-radius: 3px 3px 0 0;
+    transform: scaleY(0.5);
+    transform-origin: bottom;
+    transition: transform 0.04s ease-out;
+    opacity: 1;
+    flex-shrink: 0;
+    flex-grow: 0;
+}
+.progress-line:not([data-style="bars"]) .dyn-bar {
+    display: none;
+}
+
+.time-current, .time-total { 
+    font-size: 0.85em; 
+    color: var(--card-text-secondary-color); 
+    width: 35px; 
+    text-align: center; 
+}
+
+/* 6. Estilos del Botón de Carga (Optimizado) */
+
+#file-input { display: none; }
+.custom-file-btn {
+    display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 25px; 
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--card-text-color); 
+    font-weight: 500; 
+    cursor: pointer; 
+    transition: background-color 0.3s, transform 0.1s, color 0.3s; 
+    font-size: 0.9em;
+}
+.custom-file-btn:hover { 
+    background: var(--main-color);
+    border-color: var(--main-color);
+}
+
+/* --- 7. Estilos del Selector de Color (ACTUALIZADO) --- */
+.color-selector {
+    z-index: 10;
+    display: flex; 
+    gap: 0; 
+    flex-direction: column; 
+    background: var(--card-bg-color);
+    border-radius: 20px;
+    border: 1px solid var(--border-color);
+    color: var(--card-text-color);
+    padding: 20px;
+    width: 220px; /* <--- ANCHO AUMENTADO (era 170px) */
+    min-height: 400px;
+    position: relative;
+}
+
+.color-options-panel h3 { margin: 0; font-size: 1.0em; opacity: 0.8; }
+.color-options { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 15px; }
+.color-swatch { 
+    --swatch-color: #fff; width: 25px; height: 25px; border-radius: 50%; 
+    background-color: var(--swatch-color); border: 3px solid transparent; 
+    cursor: pointer; transition: transform 0.2s, border-color 0.2s; 
+    position: relative; z-index: 21; 
+}
+.color-swatch.active { border-color: var(--card-text-color); transform: scale(1.1); }
+
+/* Paneles de personalización */
+.customization-panel { 
+    margin-top: 15px; 
+    padding-top: 15px; 
+    border-top: 1px solid var(--border-color);
+}
+.customization-panel h3 { margin-bottom: 10px; font-size: 1.0em; opacity: 0.8; }
+.hidden { display: none !important; }
+
+/* Grupos de control (Optimizados) */
+.control-group { display: flex; flex-direction: column; margin-bottom: 15px; gap: 5px; }
+.control-group label { font-size: 0.9em; color: var(--card-text-secondary-color); }
+.control-group input[type="range"] { 
+    width: 100%; 
+    -webkit-appearance: none; appearance: none; height: 6px; 
+    background: #000;
+    border-radius: 3px; 
+    outline: none;
+}
+.control-group input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none; width: 14px; height: 14px; 
+    border-radius: 50%; background: var(--main-color); cursor: pointer;
+}
+.control-group input[type="range"]::-moz-range-thumb {
+    width: 14px; height: 14px; border-radius: 50%; 
+    background: var(--main-color); cursor: pointer; border: none;
+}
+.control-group span { font-size: 0.9em; opacity: 0.9; text-align: right; }
+
+/* Estilos de Previsualización (Optimizados) */
+.style-swatch { 
+    width: 60px; height: 40px; border-radius: 8px; 
+    background: #000;
+    display: flex; justify-content: center; align-items: center;
+    border: 3px solid transparent; 
+    transition: border-color 0.2s;
+    padding: 0;
+}
+.style-swatch.active { border-color: var(--main-color); }
+.style-preview { width: 80%; height: 3px; background-color: var(--main-color); border-radius: 2px; }
+.style-preview.spark { transform: scaleY(1.5); }
+.style-preview.bars { 
+    display: flex; justify-content: space-around; align-items: flex-end; 
+    background: transparent; height: 80%; width: 90%; 
+}
+.style-preview.bars > div { 
+    width: 25%; height: 3px; background-color: var(--main-color); 
+    border-radius: 1px; 
+    transform: scaleY(0.5); 
+}
+.style-preview.bars > div:nth-child(1) { transform: scaleY(1.0); } 
+.style-preview.bars > div:nth-child(2) { transform: scaleY(1.5); } 
+.style-preview.bars > div:nth-child(3) { transform: scaleY(0.8); } 
+
+/* Panel de alineación de letras */
+/* AHORA HAY MÁS ESPACIO, PODEMOS AGRANDARLOS */
+#lyrics-align-panel .style-swatch {
+    width: 58px; /* <--- AJUSTADO (era 45px) */
+}
+
+#lyrics-align-panel .material-icons {
+    font-size: 22px;
+    color: var(--card-text-secondary-color);
+    transition: color 0.2s ease;
+}
+
+#lyrics-align-panel .style-swatch:hover .material-icons {
+    color: var(--card-text-color);
+}
+
+#lyrics-align-panel .style-swatch.active .material-icons {
+    color: var(--main-color);
+}
+
+/* Estilos para los nuevos <select> */
+#lyrics-font-select,
+#lyrics-effect-select {
+    width: 100%;
+    background-color: #000; /* Fondo oscuro */
+    color: var(--card-text-color); /* Texto claro */
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 8px;
+    font-size: 0.9em;
+    cursor: pointer;
+    outline: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    /* Flecha personalizada */
+    background-image: linear-gradient(45deg, transparent 50%, var(--card-text-secondary-color) 50%),
+                      linear-gradient(135deg, var(--card-text-secondary-color) 50%, transparent 50%);
+    background-position: calc(100% - 15px) center,
+                         calc(100% - 10px) center;
+    background-size: 5px 5px,
+                     5px 5px;
+    background-repeat: no-repeat;
+}
+
+#lyrics-font-select:hover,
+#lyrics-effect-select:hover {
+    border-color: var(--main-color);
+}
+
+
+/* Slider de sensibilidad (Optimizado) */
+.sensitivity-control { 
+    position: absolute; left: 100%; top: 50%; transform: translate(15px, -50%); 
+    display: flex; justify-content: center; align-items: center; 
+    width: 30px; height: 100%; z-index: 15; pointer-events: auto; 
+}
+.slider-container { display: flex; height: 280px; align-items: center; padding: 0; position: static; transform: none; z-index: 1; }
+#sensitivity-slider { 
+    -webkit-appearance: none; -moz-appearance: none; appearance: none; 
+    background: transparent; cursor: pointer; width: 200px; height: 8px; 
+    transform: rotate(270deg); transform-origin: 50% 50%; margin: 0; 
+    position: static; 
+}
+#sensitivity-slider::-webkit-slider-runnable-track {
+    background: #000; border-radius: 4px; height: 6px;
+}
+#sensitivity-slider::-moz-range-track {
+    background: #000; border-radius: 4px; height: 6px;
+}
+#sensitivity-slider::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none; width: 14px; height: 14px; 
+    border-radius: 50%; background: var(--main-color); cursor: pointer;
+    margin-top: -4px;
+}
+#sensitivity-slider::-moz-range-thumb {
+    width: 14px; height: 14px; border-radius: 50%; 
+    background: var(--main-color); cursor: pointer; border: none;
+}
+
+
+/* --- 8. Estilos de la Lista de Reproducción (Optimizados) --- */
+.playlist-panel {
+    width: 250px; 
+    min-height: 400px;
+    background: var(--card-bg-color);
+    border-radius: 20px;
+    border: 1px solid var(--border-color);
+    color: var(--card-text-color); 
+    padding: 20px;
+    overflow: hidden;
+}
+
+.playlist-panel h3 { margin: 0 0 15px 0; font-size: 1.2em; opacity: 0.9; }
+#playlist-list { 
+    list-style: none; margin: 0; padding: 0; 
+    max-height: 350px; overflow-y: auto; 
+}
+.empty-message { color: var(--card-text-secondary-color); text-align: center; padding: 20px 0; }
+/* Estilos para scrollbar (Optimizados) */
+#playlist-list::-webkit-scrollbar { width: 5px; }
+#playlist-list::-webkit-scrollbar-track { background: transparent; }
+#playlist-list::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 10px; }
+
+#playlist-list li { 
+    padding: 8px 10px; margin-bottom: 5px; border-radius: 8px; 
+    cursor: pointer; transition: background-color 0.2s, color 0.2s; 
+    font-size: 0.9em; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; 
+}
+#playlist-list li:hover { background-color: var(--border-color); }
+#playlist-list li.current-track { 
+    background: var(--main-color); 
+    color: #fff;
+    font-weight: bold; 
+}
+
+
+/* --- 9. Estilos del Panel de Letras (ACTUALIZADO CON EFECTOS) --- */
+.lyrics-panel {
+    width: 300px;
+    height: 400px; 
+    background: var(--card-bg-color);
+    border-radius: 20px;
+    border: 1px solid var(--border-color);
+    color: var(--card-text-color); 
+    padding: 20px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.lyrics-panel h3 { margin: 0 0 15px 0; font-size: 1.2em; opacity: 0.9; }
+#lyrics-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    flex-grow: 1;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-color) transparent;
+}
+/* Estilos de scrollbar para letras */
+#lyrics-list::-webkit-scrollbar { width: 5px; }
+#lyrics-list::-webkit-scrollbar-track { background: transparent; }
+#lyrics-list::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 10px; }
+
+/* Estilo base para CADA línea de letra */
+#lyrics-list li {
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 1.1em;
+    line-height: 1.5;
+    color: var(--card-text-secondary-color);
+    font-weight: 500;
+    /* Transición ACTUALIZADA para incluir 'filter' */
+    transition: color 0.3s ease, 
+                transform 0.3s ease, 
+                background-color 0.3s ease, 
+                opacity 0.3s ease,
+                font-weight 0.3s ease,
+                filter 0.3s ease; /* <--- AÑADIDO */
+    
+    /* Fuente controlada por JS (AÑADIDO) */
+    font-family: var(--lyrics-font-family, 'Roboto', sans-serif);
+}
+
+/* Clases de alineación para el contenedor de letras */
+#lyrics-list.align-left li { text-align: left; }
+#lyrics-list.align-center li { text-align: center; }
+#lyrics-list.align-right li { text-align: right; }
+
+
+/* --- INICIO: NUEVOS ESTILOS DE EFECTOS --- */
+
+/* Efecto 1: Resaltar (Default) */
+#lyrics-list[data-effect="highlight"] li {
+    opacity: 1; /* Todas las líneas visibles */
+    transform: scale(1);
+    filter: blur(0); /* AÑADIDO para resetear */
+}
+#lyrics-list[data-effect="highlight"] li.active {
+    color: var(--main-color);
+    font-weight: 700;
+    transform: scale(1.03);
+    background-color: rgba(255, 255, 255, 0.03);
+    filter: blur(0); /* AÑADIDO para resetear */
+}
+
+/* Efecto 2: Desvanecer (Fade) */
+#lyrics-list[data-effect="fade"] li {
+    opacity: 0.5; /* Líneas no activas semitransparentes */
+    transform: scale(1);
+    filter: blur(0); /* AÑADIDO para resetear */
+}
+#lyrics-list[data-effect="fade"] li.active {
+    color: var(--main-color);
+    font-weight: 700;
+    transform: scale(1.03);
+    opacity: 1; /* Línea activa totalmente opaca */
+    background-color: rgba(255, 255, 255, 0.03);
+    filter: blur(0); /* AÑADIDO para resetear */
+}
+
+/* Efecto 3: Deslizar Arriba (Slide Up) */
+#lyrics-list[data-effect="slide-up"] li {
+    opacity: 0; /* Líneas no activas invisibles */
+    transform: translateY(10px); /* Ligeramente abajo */
+    filter: blur(0); /* AÑADIDO para resetear */
+}
+#lyrics-list[data-effect="slide-up"] li.active {
+    color: var(--main-color);
+    font-weight: 700;
+    opacity: 1; /* Visible */
+    transform: translateY(0) scale(1.03); /* En su posición original */
+    background-color: rgba(255, 255, 255, 0.03);
+    filter: blur(0); /* AÑADIDO para resetear */
+}
+
+/* Efecto 4: Pulsar (Grow Pulse) */
+#lyrics-list[data-effect="grow-pulse"] li {
+    opacity: 0.7; /* Ligeramente transparente */
+    transform: scale(0.95); /* Ligeramente pequeña */
+    filter: blur(0); /* AÑADIDO para resetear */
+}
+#lyrics-list[data-effect="grow-pulse"] li.active {
+    color: var(--main-color);
+    font-weight: 700;
+    opacity: 1;
+    transform: scale(1.1); /* Más grande */
+    background-color: rgba(255, 255, 255, 0.03);
+    filter: blur(0); /* AÑADIDO para resetear */
+}
+
+/* ===== INICIO DE ESTILOS AÑADIDOS ===== */
+
+/* Efecto 5: Deslizar Lateral (Slide-In) */
+#lyrics-list[data-effect="slide-in"] li {
+    opacity: 0;
+    transform: translateX(-20px); /* Empieza a la izquierda */
+    filter: blur(0);
+}
+#lyrics-list[data-effect="slide-in"] li.active {
+    color: var(--main-color);
+    font-weight: 700;
+    opacity: 1;
+    transform: translateX(0); /* Vuelve a su posición */
+    background-color: rgba(255, 255, 255, 0.03);
+}
+
+/* Efecto 6: Enfoque (Blur) */
+#lyrics-list[data-effect="blur-focus"] li {
+    opacity: 0.8;
+    transform: scale(1);
+    filter: blur(2px); /* desenfoca líneas no activas */
+}
+#lyrics-list[data-effect="blur-focus"] li.active {
+    color: var(--main-color);
+    font-weight: 700;
+    opacity: 1;
+    transform: scale(1.03);
+    filter: blur(0); /* Línea activa enfocada */
+    background-color: rgba(255, 255, 255, 0.03);
+}
+/* ===== FIN DE ESTILOS AÑADIDOS ===== */
+
+
+/* --- 10. Media Queries (ACTUALIZADAS) --- */
+@media (max-width: 1024px) {
+    .main-container {
+        flex-direction: column; align-items: center; gap: 20px; padding: 20px;
+    }
+    .player-card { width: 90vw; max-width: 500px; min-width: 0; }
+    .playlist-panel { width: 90vw; max-width: 500px; height: 300px; }
+    .color-selector { 
+        width: 90vw; /* <--- ACTUALIZADO */
+        max-width: 500px; 
+        min-height: auto; 
+        padding: 20px; 
+    }
+    .lyrics-panel { width: 90vw; max-width: 500px; min-height: 300px; height: 300px; order: -1; } /* Panel de letras arriba en móvil (esto ya estaba bien) */
+
+    .sensitivity-control { position: static; transform: none; width: 100%; margin-top: 20px; height: auto; }
+    .slider-container { width: 100%; height: auto; justify-content: center; align-items: center; }
+    #sensitivity-slider { width: 80%; transform: rotate(0deg); height: 8px; }
+    .header-footer-bar { height: 30px; }
+    .header-content { max-width: 100%; font-size: 0.75em; }
+
+    /* Ajuste de selectores en móvil */
+    #lyrics-font-select,
+    #lyrics-effect-select {
+        padding: 12px;
+        font-size: 1em;
+    }
+}
+
+@media (max-width: 600px) {
+    .player-card { padding: 20px; }
+    .song-info { flex-direction: column; align-items: center; text-align: center; }
+    .album-art { width: 100px; height: 100px; }
+    #album-icon { font-size: 60px; }
+    .text-details { width: 100%; text-align: center; }
+    .song-title { font-size: 1.5em; }
+    
+    .player-controls, .secondary-controls { gap: 20px; }
+    
+    .play-btn { width: 60px; height: 60px; font-size: 30px; }
+    .control-btn { width: 40px; height: 40px; font-size: 20px; }
+    .header-content { font-size: 0.7em; }
+    #header-song-title { max-width: 30%; }
+    
+    #lyrics-list li { font-size: 1.0em; }
+}
+
+/* --- 11. Estilos Específicos para Carpetas (Optimizados y CORREGIDOS) --- */
+.folders-panel {
+    width: 100%; 
+    margin-top: 20px; 
+    overflow-y: auto; 
+}
+
+.playlist-panel {
+    overflow-y: auto;
+    min-height: 150px; 
+}
+
+#folders-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    user-select: none;
+}
+
+#folders-list li {
+    padding: 8px 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: default;
+    transition: background-color 0.2s;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--card-text-color);
+    border-radius: 8px;
+}
+
+#folders-list li:hover {
+    background-color: #2A2A2A; 
+}
+
+#folders-list li.folder-item {
+    font-weight: bold;
+    color: var(--main-color);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+#folders-list li.folder-item:hover {
+    background-color: #2A2A2A; 
+    color: var(--main-color);
+}
+
+#folders-list li.audio-item {
+    font-size: 0.9em;
+    color: var(--card-text-secondary-color);
+}
+
+#folders-list li.audio-item:hover {
+    background-color: #2A2A2A; 
+    color: var(--card-text-color);
+}
+
+#folders-list li .file-icon {
+    font-size: 1.2em;
+    color: inherit; 
+}
+
+.folders-panel.drag-active {
+    border: 2px dashed var(--main-color);
+    background-color: var(--border-color);
+}
+
+#folders-list .folder-item > ul {
+    list-style: none;
+    padding-left: 20px;
+    margin-top: 5px;
+    max-height: 1000px;
+    overflow: hidden;
+    transition: max-height 0.3s ease-in-out, margin-top 0.3s ease-in-out;
+    width: 100%;
+}
+
+#folders-list .folder-item.collapsed > ul {
+    max-height: 0;
+    margin-top: 0;
+}

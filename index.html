@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reproductor de Música Optimizado</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Lobster&family=Montserrat:wght@400;700&family=Oswald:wght@400;700&family=Poppins:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+
+    <header class="header-footer-bar">
+        <div class="header-content">
+            <span id="header-song-title" class="header-item">No hay canción</span>
+            
+            <span id="header-battery" class="header-item">
+                <span id="battery-level">--%</span>
+                <span id="battery-icon" class="material-icons">battery_unknown</span>
+            </span>
+            
+            <span id="header-time" class="header-item">12:00 PM</span>
+        </div>
+    </header>
+    
+    <div class="main-container"> 
+        
+        <div class="lyrics-panel" draggable="true">
+            <h3>Letra</h3>
+            <ul id="lyrics-list" data-effect="highlight" class="align-center">
+                <li class="empty-message">No hay letra disponible.</li>
+            </ul>
+        </div>
+
+        <div class="player-card" draggable="true">
+            <div class="controls-panel">
+
+                <div class="song-info">
+                    <div class="album-art" id="album-art-container">
+                        <span id="album-icon" class="material-icons">music_note</span>
+                    </div>
+                    <div class="text-details">
+                        <h2 class="song-title">Cargando Música...</h2>
+                        <p class="artist-name">Carga un archivo MP3</p>
+                    </div>
+                </div>
+
+                <audio id="audio-player" src="" controls></audio>
+                
+                <div class="player-controls">
+                    <button id="play-pause-btn" class="play-btn"><span class="material-icons">play_arrow</span></button>
+                </div>
+
+                <div class="progress-bar-container">
+                    <span id="current-time" class="time-current">0:00</span>
+                    <div id="progress-bar" class="progress-bar">
+                        <div id="progress-line" class="progress-line"></div>
+                    </div>
+                    <span id="total-time" class="time-total">0:00</span>
+                </div>
+
+                <div class="secondary-controls">
+                    <button id="repeat-btn" class="control-btn" title="Modo de Repetición (Desactivado)"><span id="repeat-icon" class="material-icons">repeat</span></button>
+                    <button id="prev-btn" class="control-btn"><span class="material-icons">skip_previous</span></button>
+                    <button id="skip-back-btn" class="control-btn" title="Retroceder 10s"><span class="material-icons">replay_10</span></button>
+                    <button id="skip-forward-btn" class="control-btn" title="Adelantar 10s"><span class="material-icons">forward_10</span></button>
+                    <button id="next-btn" class="control-btn"><span class="material-icons">skip_next</span></button>
+                </div>
+                
+                <div class="file-uploader">
+                    <input type="file" id="file-input" accept="audio/*, .mp3, audio/mpeg, audio/mp3, .lrc" multiple>
+                    <label for="file-input" class="custom-file-btn">
+                        <span class="material-icons">library_add</span>
+                        Añadir canciones (Playlist)
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="playlist-panel" draggable="true">
+            <h3>Lista de Reproducción (Playlist)</h3>
+            <ul id="playlist-list">
+                <li class="empty-message">Carga archivos para ver la lista.</li>
+            </ul>
+        </div>
+        
+        <div class="color-selector" draggable="true">
+        
+            <div class="color-options-panel">
+                <h3>Tema Base</h3>
+                
+                <div id="theme-options" class="color-options">
+                    <button class="color-swatch active" data-theme="theme-blue" style="--swatch-color: #3e9dff;" title="Azul"></button>
+                    <button class="color-swatch" data-theme="theme-red" style="--swatch-color: #ff3e3e;" title="Rojo"></button>
+                    <button class="color-swatch" data-theme="theme-purple" style="--swatch-color: #ff3ef2;" title="Púrpura"></button>
+                    <button class="color-swatch" data-theme="theme-green" style="--swatch-color: #3eff75;" title="Verde"></button>
+                    <button class="color-swatch" data-theme="theme-orange" style="--swatch-color: #ff8c3e;" title="Naranja"></button>
+                    <button class="color-swatch" data-theme="theme-cyan" style="--swatch-color: #3efff2;" title="Cian"></button>
+                    <button class="color-swatch" data-theme="theme-gold" style="--swatch-color: #ffd700;" title="Dorado"></button>
+                    <button class="color-swatch" data-theme="theme-magenta" style="--swatch-color: #c03eff;" title="Magenta"></button>
+                    <button class="color-swatch" data-theme="theme-light" style="--swatch-color: #DEE4E7; border: 1px solid #ccc;" title="Claro"></button>
+                    <button class="color-swatch" data-theme="theme-dark" style="--swatch-color: #121212;" title="Oscuro"></button>
+                </div>
+            </div>
+
+            <div class="customization-panel" id="progress-style-panel">
+                <h3>Estilo de Pulso</h3>
+                <div class="color-options" id="progress-style-options">
+                    <button class="style-swatch active" data-style="line" title="Línea Sólida">
+                        <div class="style-preview solid"></div>
+                    </button>
+                    <button class="style-swatch" data-style="spark" title="Pulsación Vertical">
+                        <div class="style-preview spark"></div>
+                    </button>
+                    <button class="style-swatch" data-style="bars" title="Barras Espectro">
+                        <div class="style-preview bars">
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                        </div>
+                    </button>
+
+                </div>
+            </div>
+            
+            <div class="customization-panel" id="lyrics-align-panel">
+                <h3>Alineación de Letra</h3>
+                <div class="color-options" id="lyrics-align-options">
+                    <button class="style-swatch active" data-align="center" title="Centrado">
+                        <span class="material-icons">format_align_center</span>
+                    </button>
+                    <button class="style-swatch" data-align="left" title="Izquierda">
+                        <span class="material-icons">format_align_left</span>
+                    </button>
+                    <button class="style-swatch" data-align="right" title="Derecha">
+                        <span class="material-icons">format_align_right</span>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="customization-panel" id="lyrics-font-panel">
+                <h3>Fuente de Letra</h3>
+                <select id="lyrics-font-select">
+                    <option value="'Roboto', sans-serif" style="font-family: 'Roboto', sans-serif;">Roboto</option>
+                    <option value="'Lato', sans-serif" style="font-family: 'Lato', sans-serif;">Lato</option>
+                    <option value="'Montserrat', sans-serif" style="font-family: 'Montserrat', sans-serif;">Montserrat</option>
+                    <option value="'Poppins', sans-serif" style="font-family: 'Poppins', sans-serif;">Poppins</option>
+                    <option value="'Oswald', sans-serif" style="font-family: 'Oswald', sans-serif;">Oswald</option>
+                    <option value="'Lobster', cursive" style="font-family: 'Lobster', cursive;">Lobster</option>
+                    <option value="Arial, sans-serif" style="font-family: Arial, sans-serif;">Arial</option>
+                    <option value="Verdana, sans-serif" style="font-family: Verdana, sans-serif;">Verdana</option>
+                    <option value="Georgia, serif" style="font-family: Georgia, serif;">Georgia</option>
+                    <option value="'Times New Roman', serif" style="font-family: 'Times New Roman', serif;">Times New Roman</option>
+                    <option value="'Courier New', monospace" style="font-family: 'Courier New', monospace;">Courier New</option>
+                </select>
+            </div>
+            
+            <div class="customization-panel" id="lyrics-effect-panel">
+                <h3>Efecto de Transición</h3>
+                <select id="lyrics-effect-select">
+                    <option value="highlight">Resaltar (Default)</option>
+                    <option value="fade">Desvanecer</option>
+                    <option value="slide-up">Deslizar Arriba</option>
+                    <option value="grow-pulse">Pulsar</option>
+                    <option value="slide-in">Deslizar Lateral</option>
+                    <option value="blur-focus">Enfoque (Blur)</option>
+                    </select>
+            </div>
+            
+            <div class="sensitivity-control">
+                <div class="slider-container">
+                    <input type="range" id="sensitivity-slider" min="0" max="100" value="50" orient="vertical">
+                </div>
+            </div>
+
+        </div>
+        
+        <div class="playlist-panel folders-panel" draggable="true">
+            <h3>Carpetas</h3>
+            <ul id="folders-list">
+                <li class="empty-message">Añade archivos para ver las carpetas.</li>
+            </ul>
+        </div>
+    </div>
+    
+    <footer class="header-footer-bar"></footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsmediatags/3.9.5/jsmediatags.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

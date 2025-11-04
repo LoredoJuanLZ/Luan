@@ -133,6 +133,10 @@ let lyricsAlignOptions, lyricsFontSelect, lyricsEffectSelect;
 let sidebar, sidebarOpenBtn, sidebarCloseBtn, sidebarOverlay, panelToggleList;
 // ===== FIN VARS BARRA LATERAL (AÑADIDO) =====
 
+// ===== INICIO VARS BOTÓN MÓVIL (AÑADIDO) =====
+let mobileFolderBtn, folderInput;
+// ===== FIN VARS BOTÓN MÓVIL =====
+
 // ===== INICIO VARS TEMA DINÁMICO (AÑADIDO) =====
 let dynamicThemeToggle;
 let isDynamicThemeActive = true;
@@ -223,7 +227,6 @@ function loadPanelVisibility() {
 // ===== FIN FUNCIONES BARRA LATERAL (AÑADIDO) =====
 
 function updatePlaylistUI() {
-    // ... (Función sin cambios) ...
     if (!playlistList) return; 
     
     playlistList.innerHTML = '';
@@ -269,7 +272,6 @@ function applyThemeVariables(theme, themeName) {
 }
 
 function applyProgressStyle(styleName, save = true) {
-    // ... (Función sin cambios) ...
     if (!progressLine || !visualizerBarContainer) return;
 
     progressStyle = styleName;
@@ -307,7 +309,6 @@ function applyProgressStyle(styleName, save = true) {
  * Aplica la alineación de texto al panel de letras.
  */
 function applyLyricAlignment(alignName, save = true) {
-    // ... (Función sin cambios) ...
     if (!lyricsList) return;
 
     // Quitar clases anteriores
@@ -375,7 +376,6 @@ function applyLyricEffect(effectName, save = true) {
 // ===================================
 
 function updateTime() {
-    // ... (Función sin cambios) ...
     if (!headerTime) return;
     const now = new Date();
     let hours = now.getHours();
@@ -387,7 +387,6 @@ function updateTime() {
 }
 
 function getBatteryStatus() {
-    // ... (Función sin cambios) ...
     if (!batteryLevelSpan || !batteryIconSpan) return;
     if ('getBattery' in navigator) {
         navigator.getBattery().then(function(battery) {
@@ -774,7 +773,6 @@ function loadTrack(index, autoPlay = false) {
 }
 
 function formatTime(seconds) {
-    // ... (Función sin cambios) ...
     const minutes = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
     return `${minutes}:${secs < 10 ? '0' : ''}${secs}`;
@@ -822,7 +820,6 @@ const bufferLength = 128;
 const dataArray = new Uint8Array(bufferLength); 
 
 function visualize() {
-    // ... (Función sin cambios) ...
     if (!analyser || audioPlayer.paused) {
         requestAnimationFrame(visualize);
         return;
@@ -879,7 +876,6 @@ function visualize() {
 }
 
 function createDynamicBars() {
-    // ... (Función sin cambios) ...
     if (!progressBarContainer) return;
 
     visualizerBarContainer = document.getElementById('visualizer-bar-container');
@@ -920,7 +916,6 @@ function createDynamicBars() {
 // E. FUNCIONES DE REPETICIÓN
 // ===================================
 function toggleRepeatMode() {
-    // ... (Función sin cambios) ...
     if (!repeatIcon || !audioPlayer) return;
     if (repeatMode === 'none') {
         repeatMode = 'one';
@@ -942,7 +937,6 @@ function toggleRepeatMode() {
 }
 
 function loadRepeatMode() {
-    // ... (Función sin cambios) ...
     const savedMode = localStorage.getItem('repeatMode');
     if (savedMode && ['none', 'one', 'all'].includes(savedMode)) {
         repeatMode = savedMode;
@@ -974,7 +968,6 @@ function isAudioFile(fileName) {
 }
 
 function createFolderEntryUI(name, parentElement) {
-    // ... (Función sin cambios) ...
     const li = document.createElement('li');
     li.classList.add('folder-item', 'collapsed'); 
     li.innerHTML = `<span class="material-icons file-icon">folder</span> ${name}`;
@@ -987,7 +980,6 @@ function createFolderEntryUI(name, parentElement) {
 }
 
 function createAudioEntryUI(file, parentElement) {
-    // ... (Función sin cambios) ...
     const fileIndex = folderPlaylist.length;
     folderPlaylist.push(file);
     const li = document.createElement('li');
@@ -1045,11 +1037,43 @@ async function processDirectoryEntry(entry, parentElement) {
     }
 }
 
+// ===== INICIO: NUEVA FUNCIÓN PARA RENDERIZAR ÁRBOL DE ARCHIVOS MÓVIL (AÑADIDO) =====
+/**
+ * (NUEVA FUNCIÓN)
+ * Renderiza la estructura de carpetas de un FileList (con webkitRelativePath)
+ * en la UI del panel de carpetas.
+ */
+function renderFolderTree(node, parentElement) {
+    // Primero, renderizar todas las subcarpetas (ordenadas alfabéticamente)
+    Object.keys(node).sort().forEach(key => {
+        if (key !== '_files') {
+            const newParentUI = createFolderEntryUI(key, parentElement);
+            // Llamada recursiva para esa subcarpeta
+            renderFolderTree(node[key], newParentUI);
+        }
+    });
+
+    // Segundo, renderizar todos los archivos en este nivel (ordenados alfabéticamente)
+    if (node._files) {
+        node._files.sort((a, b) => a.name.localeCompare(b.name)).forEach(file => {
+            if (isAudioFile(file.name)) {
+                // Reutiliza la función existente para crear el <li> de audio
+                createAudioEntryUI(file, parentElement);
+            } else if (file.name.toLowerCase().endsWith('.lrc')) {
+                // Almacena el archivo .lrc en el mapa
+                const baseName = file.name.replace(/\.lrc$/i, "");
+                lrcMap.set(baseName, file);
+            }
+        });
+    }
+}
+// ===== FIN: NUEVA FUNCIÓN PARA RENDERIZAR ÁRBOL DE ARCHIVOS MÓVIL =====
+
+
 // ====================================================================
 // G. MEDIA SESSION API
 // ====================================================================
 function updateMediaSession(title, artist, albumArtUrl) {
-    // ... (Función sin cambios) ...
     if ('mediaSession' in navigator) {
         const formatMatch = albumArtUrl.match(/^data:(image\/\w+);base64/);
         const imageType = formatMatch ? formatMatch[1] : 'image/png';
@@ -1065,7 +1089,6 @@ function updateMediaSession(title, artist, albumArtUrl) {
 }
 
 function setupMediaSessionHandlers() {
-    // ... (Función sin cambios) ...
     if ('mediaSession' in navigator) {
         navigator.mediaSession.setActionHandler('play', () => {
             if (audioPlayer.paused) {
@@ -1385,6 +1408,15 @@ function extractAndApplyDynamicTheme(imageUrl) {
 // ====================================================================
 
 document.addEventListener('DOMContentLoaded', () => {
+
+    // ===== INICIO: DETECCIÓN MÓVIL (AÑADIDO) =====
+    const isMobile = /Android|iPhone/i.test(navigator.userAgent);
+    if (isMobile) {
+        document.body.classList.add('mobile-detected');
+    }
+    // ===== FIN: DETECCIÓN MÓVIL =====
+
+
     // 1. ASIGNACIONES DE DOM (ACTUALIZADO)
     audioPlayer = document.getElementById('audio-player');
     fileInput = document.getElementById('file-input');
@@ -1436,6 +1468,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     foldersPanel = document.querySelector('.folders-panel');
     foldersList = document.getElementById('folders-list');
+
+    // ===== INICIO ASIGNACIÓN BOTÓN MÓVIL (AÑADIDO) =====
+    mobileFolderBtn = document.getElementById('mobile-folder-btn');
+    folderInput = document.getElementById('folder-input');
+    // ===== FIN ASIGNACIÓN BOTÓN MÓVIL =====
 
     // ===== INICIO ASIGNACIÓN BARRA LATERAL (AÑADIDO) =====
     sidebar = document.getElementById('sidebar-nav');
@@ -1546,7 +1583,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setInterval(updateTime, 1000); 
     getBatteryStatus();
     
-    // Explorador de Carpetas (ACTUALIZADO)
+    // Explorador de Carpetas (Drag & Drop para Escritorio)
     if (foldersPanel && foldersList) {
         if (foldersList.innerHTML === '') {
             foldersList.innerHTML = '<li class="empty-message">Arrastra una carpeta aquí para explorarla.</li>';
@@ -1594,6 +1631,71 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // ===== INICIO: LISTENERS DE CARGA DE CARPETA MÓVIL (AÑADIDO) =====
+    if (mobileFolderBtn && folderInput) {
+        mobileFolderBtn.addEventListener('click', () => {
+            folderInput.click();
+        });
+
+        folderInput.addEventListener('change', (e) => {
+            const files = e.target.files;
+            if (!files || files.length === 0) return;
+
+            foldersList.innerHTML = '';
+            folderPlaylist = [];
+            lrcMap.clear();
+
+            const fileTree = {}; // Objeto para construir el árbol
+
+            for (const file of files) {
+                // webkitRelativePath es la clave: "Carpeta/Subcarpeta/cancion.mp3"
+                const path = file.webkitRelativePath;
+                
+                if (!path) {
+                    // Fallback si webkitRelativePath no está disponible
+                    // Tratarlo como una lista plana
+                    if (isAudioFile(file.name)) {
+                        createAudioEntryUI(file, foldersList);
+                    } else if (file.name.toLowerCase().endsWith('.lrc')) {
+                        const baseName = file.name.replace(/\.lrc$/i, "");
+                        lrcMap.set(baseName, file);
+                    }
+                    continue; // Saltar al siguiente archivo
+                }
+                
+                const parts = path.split('/');
+                let currentLevel = fileTree;
+
+                // Recorrer las carpetas (todas menos la última parte, que es el archivo)
+                for (let i = 0; i < parts.length - 1; i++) {
+                    const part = parts[i];
+                    if (!currentLevel[part]) {
+                        currentLevel[part] = {}; // Crear el objeto de subcarpeta si no existe
+                    }
+                    currentLevel = currentLevel[part]; // Moverse al siguiente nivel
+                }
+
+                // Añadir el archivo al nivel actual (en una lista _files)
+                const fileName = parts[parts.length - 1];
+                if (!currentLevel._files) {
+                    currentLevel._files = [];
+                }
+                currentLevel._files.push(file);
+            }
+
+            // Si se usó el fallback, fileTree estará vacío, no hacer nada más
+            if (Object.keys(fileTree).length > 0) {
+                // Renderizar el árbol desde la raíz
+                renderFolderTree(fileTree, foldersList);
+            }
+            
+            // Limpiar el valor del input para permitir recargar la misma carpeta
+            e.target.value = null; 
+        });
+    }
+    // ===== FIN: LISTENERS DE CARGA DE CARPETA MÓVIL =====
+
+
     // Listener de Temas
     themeOptionsContainer.addEventListener('click', (event) => {
         const target = event.target;
@@ -1619,7 +1721,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Listener de Estilo de Progreso
     progressStyleOptions.addEventListener('click', (event) => {
-        // ... (Sin cambios) ...
         const target = event.target.closest('.style-swatch');
         if (target) {
             const styleName = target.dataset.style;
@@ -1629,7 +1730,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Listener de Sensibilidad
     sensitivitySlider.addEventListener('input', (event) => {
-        // ... (Sin cambios) ...
         sensitivityMultiplier = event.target.value / 100;
         root.style.setProperty('--sensitivity-multiplier', sensitivityMultiplier);
         localStorage.setItem('userSensitivity', sensitivityMultiplier.toString());
@@ -1750,7 +1850,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     playlistList.addEventListener('click', (event) => {
-        // ... (Sin cambios) ...
         const li = event.target.closest('li');
         if (li && li.dataset.index && !li.classList.contains('empty-message')) {
             const index = parseInt(li.dataset.index);
@@ -1763,7 +1862,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     playPauseBtn.addEventListener('click', () => {
-        // ... (Sin cambios) ...
         if (playlist.length === 0) {
             alert("Por favor, selecciona archivos de música (MP3/WAV) primero.");
             return;
@@ -1797,7 +1895,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     nextBtn.addEventListener('click', () => {
-        // ... (Sin cambios) ...
         if (playlist.length > 0) {
             let nextIndex = (currentTrackIndex + 1) % playlist.length;
             loadTrack(nextIndex, true);
@@ -1805,7 +1902,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     prevBtn.addEventListener('click', () => {
-        // ... (Sin cambios) ...
         if (playlist.length > 0) {
             let prevIndex = (currentTrackIndex - 1 + playlist.length) % playlist.length;
             loadTrack(prevIndex, true);
@@ -1859,23 +1955,19 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     audioPlayer.addEventListener('loadedmetadata', () => {
-        // ... (Sin cambios) ...
         totalTimeDisplay.textContent = formatTime(audioPlayer.duration);
     });
 
     audioPlayer.addEventListener('play', () => {
-        // ... (Sin cambios) ...
         playIcon.textContent = 'pause';
         requestAnimationFrame(visualize);
     });
 
     audioPlayer.addEventListener('pause', () => {
-        // ... (Sin cambios) ...
         playIcon.textContent = 'play_arrow';
     });
     
     audioPlayer.addEventListener('ended', () => {
-        // ... (Sin cambios) ...
         if (playlist.length > 0) {
             let nextIndex = (currentTrackIndex + 1);
             if (repeatMode === 'all') {
@@ -1902,7 +1994,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     
     progressBarContainer.addEventListener('click', (e) => {
-        // ... (Sin cambios) ...
         if (audioPlayer.duration > 0) {
             const clickX = e.clientX - progressBarContainer.getBoundingClientRect().left;
             const width = progressBarContainer.clientWidth;

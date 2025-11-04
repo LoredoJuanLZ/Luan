@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-R">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reproductor de Música Optimizado</title>
     
@@ -14,8 +14,71 @@
 </head>
 <body>
 
+    <aside id="sidebar-nav" class="sidebar">
+        <div class="sidebar-header">
+            <h3>Mostrar/Ocultar</h3>
+            <button id="sidebar-close-btn" class="sidebar-toggle-btn">
+                <span class="material-icons">close</span>
+            </button>
+        </div>
+        <ul id="panel-toggle-list" class="sidebar-list">
+            <li>
+                <label for="toggle-lyrics">
+                    <input type="checkbox" id="toggle-lyrics" class="panel-toggle" data-target=".lyrics-panel" checked>
+                    Panel de Letras
+                </label>
+            </li>
+            <li>
+                <label for="toggle-player">
+                    <input type="checkbox" id="toggle-player" class="panel-toggle" data-target=".player-card" checked>
+                    Reproductor
+                </label>
+            </li>
+            <li>
+                <label for="toggle-playlist">
+                    <input type="checkbox" id="toggle-playlist" class="panel-toggle" data-target=".playlist-panel:not(.folders-panel)" checked>
+                    Lista de Reproducción
+                </label>
+            </li>
+            <li>
+                <label for="toggle-options">
+                    <input type="checkbox" id="toggle-options" class="panel-toggle" data-target=".color-selector" checked>
+                    Opciones de Tema
+                </label>
+            </li>
+            <li>
+                <label for="toggle-folders">
+                    <input type="checkbox" id="toggle-folders" class="panel-toggle" data-target=".folders-panel" checked>
+                    Panel de Carpetas
+                </label>
+            </li>
+        </ul>
+        
+        <div class="sidebar-header" style="border-top: 1px solid var(--border-color); margin-top: 10px;">
+            <h3>Configuración</h3>
+        </div>
+        <ul class="sidebar-list">
+            <li>
+                <label for="toggle-dynamic-theme">
+                    <input type="checkbox" id="toggle-dynamic-theme" class="settings-toggle" checked>
+                    Tema Dinámico (Carátula)
+                </label>
+            </li>
+            <li id="open-eq-btn" class="sidebar-button">
+                <label> <span class="material-icons" style="font-size: 20px;">equalizer</span>
+                    Ecualizador
+                </label>
+            </li>
+        </ul>
+        </aside>
+    <div id="sidebar-overlay" class="sidebar-overlay"></div>
+
     <header class="header-footer-bar">
         <div class="header-content">
+            
+            <button id="sidebar-open-btn" class="sidebar-toggle-btn header-item">
+                <span class="material-icons">menu</span>
+            </button>
             <span id="header-song-title" class="header-item">No hay canción</span>
             
             <span id="header-battery" class="header-item">
@@ -189,6 +252,33 @@
     
     <footer class="header-footer-bar"></footer>
 
+    <div id="eq-modal-overlay" class="eq-overlay"></div>
+    <div id="eq-modal" class="eq-modal">
+        <div class="eq-header">
+            <h3>Ecualizador de 10 Bandas</h3>
+            <button id="eq-close-btn" class="sidebar-toggle-btn">
+                <span class="material-icons">close</span>
+            </button>
+        </div>
+        <div class="eq-body">
+            <div class="eq-presets-container">
+                <label for="eq-presets-select">Presets</label>
+                <select id="eq-presets-select">
+                    <option value="custom">Personalizado</option>
+                    <option value="flat">Plano (Flat)</option>
+                    <option value="pop">Pop</option>
+                    <option value="rock">Rock</option>
+                    <option value="jazz">Jazz</option>
+                    <option value="classical">Clásica</option>
+                    <option value="vocal">Vocal</option>
+                    <option value="bass_boost">Refuerzo de Graves</option>
+                    <option value="treble_boost">Refuerzo de Agudos</option>
+                </select>
+            </div>
+            <div id="eq-bands-container">
+                </div>
+        </div>
+    </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jsmediatags/3.9.5/jsmediatags.min.js"></script>
     <script src="script.js"></script>
 </body>

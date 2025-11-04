@@ -146,8 +146,13 @@ footer.header-footer-bar {
     border: 1px solid var(--border-color);
     border-radius: 20px;
     color: var(--card-text-color); 
-    width: 450px; 
-    min-width: 450px; 
+    
+    /* ===== MODIFICADO: Ancho responsivo ===== */
+    max-width: 450px; 
+    width: 100%; 
+    /* min-width: 450px; <-- ELIMINADO */
+    /* ===== FIN DE MODIFICACIÓN ===== */
+
     padding: 30px;
 }
 
@@ -324,7 +329,12 @@ footer.header-footer-bar {
     border: 1px solid var(--border-color);
     color: var(--card-text-color);
     padding: 20px;
-    width: 220px; /* <--- ANCHO AUMENTADO (era 170px) */
+    
+    /* ===== MODIFICADO: Ancho responsivo ===== */
+    max-width: 220px; 
+    width: 100%;
+    /* ===== FIN DE MODIFICACIÓN ===== */
+
     min-height: 400px;
     position: relative;
 }
@@ -476,7 +486,11 @@ footer.header-footer-bar {
 
 /* --- 8. Estilos de la Lista de Reproducción (Optimizados) --- */
 .playlist-panel {
-    width: 250px; 
+    /* ===== MODIFICADO: Ancho responsivo ===== */
+    max-width: 250px; 
+    width: 100%;
+    /* ===== FIN DE MODIFICACIÓN ===== */
+
     min-height: 400px;
     background: var(--card-bg-color);
     border-radius: 20px;
@@ -512,7 +526,11 @@ footer.header-footer-bar {
 
 /* --- 9. Estilos del Panel de Letras (ACTUALIZADO CON EFECTOS) --- */
 .lyrics-panel {
-    width: 300px;
+    /* ===== MODIFICADO: Ancho responsivo ===== */
+    max-width: 300px;
+    width: 100%;
+    /* ===== FIN DE MODIFICACIÓN ===== */
+
     height: 400px; 
     background: var(--card-bg-color);
     border-radius: 20px;
@@ -664,7 +682,8 @@ footer.header-footer-bar {
     .main-container {
         flex-direction: column; align-items: center; gap: 20px; padding: 20px;
     }
-    .player-card { width: 90vw; max-width: 500px; min-width: 0; }
+    /* MODIFICADO: Se usa max-width en lugar de width */
+    .player-card { width: 90vw; max-width: 500px; /* min-width: 0; (ya no es necesario) */ }
     .playlist-panel { width: 90vw; max-width: 500px; height: 300px; }
     
     /* --- AÑADIDO PARA SOBREESCRIBIR LÍMITE DE ALTURA EN MÓVIL --- */
@@ -755,6 +774,7 @@ footer.header-footer-bar {
 }
 
 /* --- 11. Estilos Específicos para Carpetas (Optimizados y CORREGIDOS) --- */
+/* --- 11. Estilos Específicos para Carpetas (Optimizados y CORREGIDOS) --- */
 .folders-panel {
     width: 100%; 
     margin-top: 20px; 
@@ -765,13 +785,50 @@ footer.header-footer-bar {
     min-height: 0;
     max-height: none; 
     /* --- FIN DE AÑADIDO --- */
+
+    /* ===== INICIO: CORRECCIÓN DE ANCHO ===== */
+    /* Esto anula el max-width heredado de .playlist-panel */
+    max-width: none; 
+    /* ===== FIN: CORRECCIÓN DE ANCHO ===== */
 }
+
+/* ===== INICIO: ESTILOS AÑADIDOS PARA BOTÓN MÓVIL ===== */
+.folders-panel h3 {
+    margin: 0; /* Quitar margen para alinear con el botón */
+    font-size: 1.2em;
+    opacity: 0.9;
+}
+
+.folders-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px; /* Mover el margen de h3 aquí */
+}
+
+#mobile-folder-btn {
+    display: none; /* Oculto por defecto */
+    padding: 4px; /* Más pequeño para la cabecera */
+    width: 32px;
+    height: 32px;
+}
+
+/* Se activa con JS si es Android/iPhone */
+body.mobile-detected #mobile-folder-btn {
+    display: inline-flex; 
+    align-items: center;
+    justify-content: center;
+}
+
+#mobile-folder-btn .material-icons {
+    font-size: 20px;
+}
+/* ===== FIN: ESTILOS AÑADIDOS PARA BOTÓN MÓVIL ===== */
 
 .playlist-panel {
     overflow-y: auto;
     min-height: 150px; 
 }
-
 #folders-list {
     list-style: none;
     padding: 0;

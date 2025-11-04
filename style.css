@@ -61,13 +61,15 @@ footer.header-footer-bar {
 /* --- Estilos del Header (Sin cambios en layout) --- */
 .header-content {
     display: grid;
-    grid-template-columns: 1fr auto 1fr;
+    /* grid-template-columns: 1fr auto 1fr; (Original) */
+    grid-template-columns: auto 1fr auto 1fr; /* MODIFICADO para botón de menú */
     align-items: center;
     width: 100%;
     max-width: 1000px; 
     color: var(--card-text-color);
     font-size: 0.9em;
     transition: color 0.5s ease-in-out;
+    gap: 10px; /* AÑADIDO para espaciar el botón */
 }
 
 .header-item {
@@ -76,6 +78,26 @@ footer.header-footer-bar {
     gap: 5px;
     color: var(--card-text-color); /* Color primario (blanco/negro) */
     transition: color 0.5s ease-in-out;
+}
+
+/* Botón de Menú (AÑADIDO) */
+.sidebar-toggle-btn {
+    background: transparent;
+    border: none;
+    color: var(--card-text-color);
+    cursor: pointer;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background-color 0.3s, color 0.5s;
+}
+.sidebar-toggle-btn:hover {
+    background-color: var(--border-color);
+}
+#sidebar-open-btn {
+    justify-self: start; /* Alinear a la izquierda de su celda */
 }
 
 #header-song-title {
@@ -644,6 +666,15 @@ footer.header-footer-bar {
     }
     .player-card { width: 90vw; max-width: 500px; min-width: 0; }
     .playlist-panel { width: 90vw; max-width: 500px; height: 300px; }
+    
+    /* --- AÑADIDO PARA SOBREESCRIBIR LÍMITE DE ALTURA EN MÓVIL --- */
+    .folders-panel {
+        height: auto;
+        min-height: 0;
+        max-height: none;
+    }
+    /* --- FIN DE AÑADIDO --- */
+    
     .color-selector { 
         width: 90vw; /* <--- ACTUALIZADO */
         max-width: 500px; 
@@ -682,6 +713,45 @@ footer.header-footer-bar {
     #header-song-title { max-width: 30%; }
     
     #lyrics-list li { font-size: 1.0em; }
+    
+    /* Ajustes del modal de EQ en móvil */
+    .eq-modal {
+        width: 95vw;
+        top: 0;
+        left: 0;
+        transform: translate(0, 0) scale(1);
+        border-radius: 0;
+        height: 100vh;
+        max-height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+    .eq-body {
+        flex-grow: 1;
+        overflow-y: auto;
+    }
+    #eq-bands-container {
+        flex-direction: column;
+        height: auto;
+        gap: 30px;
+    }
+    .eq-band {
+        flex-direction: row;
+        height: auto;
+    }
+    .eq-band .eq-freq-label {
+        width: 40px;
+        flex-shrink: 0;
+    }
+    .eq-band .eq-slider-container {
+        transform: rotate(0deg);
+        width: 100%;
+        flex-grow: 1;
+    }
+    .eq-band input[type="range"] {
+        transform: rotate(0deg);
+        width: 100%;
+    }
 }
 
 /* --- 11. Estilos Específicos para Carpetas (Optimizados y CORREGIDOS) --- */
@@ -689,6 +759,12 @@ footer.header-footer-bar {
     width: 100%; 
     margin-top: 20px; 
     overflow-y: auto; 
+    
+    /* --- AÑADIDO PARA QUITAR LÍMITES DE ALTURA --- */
+    height: auto;
+    min-height: 0;
+    max-height: none; 
+    /* --- FIN DE AÑADIDO --- */
 }
 
 .playlist-panel {
@@ -769,3 +845,307 @@ footer.header-footer-bar {
     max-height: 0;
     margin-top: 0;
 }
+
+/* ===== INICIO SECCIÓN 12: ESTILOS DE BARRA LATERAL AÑADIDA ===== */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 300px;
+    height: 100%;
+    background: var(--card-bg-color);
+    border-right: 1px solid var(--border-color);
+    z-index: 1001; /* Encima de todo */
+    transform: translateX(-100%);
+    transition: transform 0.3s ease-in-out, background-color 0.5s, border-color 0.5s;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar.open {
+    transform: translateX(0);
+}
+
+.sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease-in-out, visibility 0.3s linear;
+}
+
+.sidebar-overlay.open {
+    opacity: 1;
+    visibility: visible;
+}
+
+.sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--card-text-color);
+    flex-shrink: 0;
+    transition: border-color 0.5s, color 0.5s;
+}
+
+.sidebar-header h3 {
+    margin: 0;
+    font-size: 1.2em;
+}
+
+.sidebar-list {
+    list-style: none;
+    padding: 20px;
+    margin: 0;
+    overflow-y: auto;
+    color: var(--card-text-color);
+    transition: color 0.5s;
+}
+
+.sidebar-list li {
+    margin-bottom: 15px;
+}
+
+.sidebar-list label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1em;
+    cursor: pointer;
+    color: var(--card-text-secondary-color);
+    transition: color 0.3s;
+}
+.sidebar-list label:hover {
+    color: var(--card-text-color);
+}
+
+/* Estilo para el botón de EQ (AÑADIDO) */
+.sidebar-list li.sidebar-button label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1em;
+    cursor: pointer;
+    color: var(--card-text-secondary-color);
+    transition: color 0.3s;
+    width: 100%; /* Asegura que ocupe todo el 'li' */
+}
+.sidebar-list li.sidebar-button label .material-icons {
+     flex-shrink: 0;
+}
+.sidebar-list li.sidebar-button label:hover {
+    color: var(--card-text-color);
+}
+
+
+.sidebar-list input[type="checkbox"] {
+    /* Estilos de checkbox personalizados */
+    appearance: none;
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    background: #000;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    cursor: pointer;
+    position: relative;
+    flex-shrink: 0;
+}
+.sidebar-list input[type="checkbox"]:checked {
+    background: var(--main-color);
+    border-color: var(--main-color);
+}
+.sidebar-list input[type="checkbox"]:checked::after {
+    content: '\e5ca'; /* material icon 'check' */
+    font-family: 'Material Icons';
+    font-size: 16px;
+    color: #fff;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* Clase para ocultar paneles (AÑADIDO) */
+.panel-hidden {
+    display: none !important;
+}
+/* ===== FIN SECCIÓN 12 ===== */
+
+
+/* ===== INICIO SECCIÓN 13: ESTILOS DEL ECUALIZADOR (AÑADIDO) ===== */
+.eq-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.3);
+    /* Efecto Blur */
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    z-index: 1999;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s linear;
+}
+
+.eq-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.9);
+    width: 90vw;
+    max-width: 600px;
+    background: var(--card-bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    z-index: 2000;
+    color: var(--card-text-color);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s linear,
+                background-color 0.5s ease, border-color 0.5s ease, color 0.5s ease;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    display: flex;
+    flex-direction: column;
+    max-height: 90vh;
+}
+
+.eq-overlay.open,
+.eq-modal.open {
+    opacity: 1;
+    visibility: visible;
+}
+.eq-modal.open {
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.eq-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid var(--border-color);
+    flex-shrink: 0;
+    transition: border-color 0.5s ease;
+}
+.eq-header h3 { margin: 0; font-size: 1.2em; }
+
+.eq-body {
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.eq-presets-container {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.eq-presets-container label {
+    font-size: 0.9em;
+    color: var(--card-text-secondary-color);
+}
+/* Reutilizar el estilo de <select> del panel de opciones */
+#eq-presets-select {
+    width: 100%;
+    background-color: #000;
+    color: var(--card-text-color);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 8px;
+    font-size: 0.9em;
+    cursor: pointer;
+    outline: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: linear-gradient(45deg, transparent 50%, var(--card-text-secondary-color) 50%),
+                      linear-gradient(135deg, var(--card-text-secondary-color) 50%, transparent 50%);
+    background-position: calc(100% - 15px) center,
+                         calc(100% - 10px) center;
+    background-size: 5px 5px,
+                     5px 5px;
+    background-repeat: no-repeat;
+    transition: border-color 0.3s ease;
+}
+#eq-presets-select:hover {
+    border-color: var(--main-color);
+}
+
+#eq-bands-container {
+    display: flex;
+    justify-content: space-around;
+    height: 220px; /* Contenedor para los sliders rotados */
+    padding: 10px 0;
+    overflow-x: auto; /* Para pantallas muy pequeñas */
+}
+
+.eq-band {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    height: 100%;
+    flex: 1;
+    min-width: 40px; /* Ancho mínimo por banda */
+}
+.eq-band .eq-slider-container {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+/* Estilo de slider vertical (copiado de sensitivity-slider) */
+.eq-band input[type="range"] {
+    -webkit-appearance: none; -moz-appearance: none; appearance: none; 
+    background: transparent; cursor: pointer; 
+    width: 160px; /* Longitud del slider (altura vertical) */
+    height: 8px;  /* Grosor del track */
+    transform: rotate(270deg); /* Rotar */
+    margin: 0;
+    transition: background-color 0.5s ease;
+}
+.eq-band input[type="range"]::-webkit-slider-runnable-track {
+    background: #000; border-radius: 4px; height: 6px;
+}
+.eq-band input[type="range"]::-moz-range-track {
+    background: #000; border-radius: 4px; height: 6px;
+}
+.eq-band input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none; width: 14px; height: 14px; 
+    border-radius: 50%; background: var(--main-color); cursor: pointer;
+    margin-top: -4px; /* Centrar thumb en el track */
+    transition: background-color 0.5s ease;
+}
+.eq-band input[type="range"]::-moz-range-thumb {
+    width: 14px; height: 14px; border-radius: 50%; 
+    background: var(--main-color); cursor: pointer; border: none;
+    transition: background-color 0.5s ease;
+}
+
+.eq-band .eq-freq-label, .eq-band .eq-gain-label {
+    font-size: 0.8em;
+    color: var(--card-text-secondary-color);
+    text-align: center;
+    user-select: none;
+    transition: color 0.5s ease;
+}
+.eq-band .eq-gain-label {
+    font-size: 0.9em;
+    color: var(--card-text-color);
+    font-weight: 500;
+    width: 45px; /* Espacio para "XX.X dB" */
+    margin-top: 10px;
+}
+/* ===== FIN SECCIÓN 13 ===== */
